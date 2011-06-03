@@ -116,6 +116,10 @@ error_reporting(0);
 									$valParms .= "<li>". str_replace('\n', '<br />', htmlentities($data[$i])) . "</li>\n";
 							}
 						}
+						elseif(!empty($file))
+						{
+							$valParms = "<li>{$file}</li>";
+						}
 						else
 						{
 							$valParms = '';
@@ -228,17 +232,38 @@ error_reporting(0);
 					<th style="min-width: 8em;">Memory</th>
 				</tr>
 				<?php
+				
 				foreach ($fullTrace as $trace)
 				{
 					?>
-					<tr>
+				<tr>
 						<td style="padding-left:<?= ($trace['level'] * 10) ?>px">
 							<?php if ($trace['type'] == 0)
-							{ ?><a target="_blank" href="http://php.net/<?= $trace['function'] ?>"><span class="native" title="PHP ">&#x261b; </span></a><?php
+							{ ?><a target="_blank" href="http://php.net/<?= $trace['function'] ?>"><span class="native" title="PHP doc <?= $trace['function'] ?>">&#x261b; </span></a><?php
 				}
 				else
 				{
-								?><span class="user" title="UDF ">&#x261b; </span><?php } ?><strong><?php if ($trace['type'] == 0)
+					/**
+					 * custom color identifier for ZendFramework methods
+					 */
+					if (substr($trace['function'], 0 , 5) == 'Zend_')
+					{
+						$userFunction = 'Zend';
+					}
+					/**
+					 * And all Corretge namespace classes and methods
+					 */
+					elseif (substr($trace['function'], 0 , 9) == 'Corretge\\')
+					{
+						$userFunction = 'Corretge';
+					}
+					else
+					{
+						$userFunction = 'user';
+					}
+					
+					
+								?><span class="<?= $userFunction ?>" title="UDF ">&#x261b; </span><?php } ?><strong><?php if ($trace['type'] == 0)
 					{ ?>\<?php } ?><?= $trace['function'] ?></strong><ul><?= $trace['valParms'] ?></ul><br />
 							<small><?= $trace['filename'] ?></small>
 							<span class="warning">

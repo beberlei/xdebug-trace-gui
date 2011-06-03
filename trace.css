@@ -1,85 +1,98 @@
 *,html * {
-	font: 12px verdana, sans-serif;
-	color: black;
+  font: 12px verdana, sans-serif;
+  color: black;
 }
 
 strong {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 small {
-	font-size: 11px;
+  font-size: 11px;
 }
 
 h1 {
-	font-size: 24px;
-	font-weight: bold;
+  font-size: 24px;
+  font-weight: bold;
 }
 
 h2 {
-	font-size: 18px;
+  font-size: 18px;
 }
 
 label {
-	display: block;
-	margin-bottom: 5px;
+  display: block;
+  margin-bottom: 5px;
 }
 
 img {
-	vertical-align: middle;
-	border: 0;
+  vertical-align: middle;
+  border: 0;
 }
 
 table {
-	width: 100%;
+  width: 100%;
 }
 
 td,th {
-	padding: 3px;
-	vertical-align: top;
+  padding: 3px;
+  vertical-align: top;
 }
 
 th {
-	background: #343434;
-	color: white;
-	text-align: left;
+  background: #343434;
+  color: white;
+  text-align: left;
 }
 
 td.digit {
-	text-align: right;
+  text-align: right;
 }
 
 a {
-	color: navy;
-	text-decoration: none;
+  color: navy;
+  text-decoration: none;
 }
 
 a:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 a:visited {
-	color: purple;
+  color: purple;
 }
 
 span.warning {
-	font-weight: bold;
-	color: maroon;
-	font-size: 11px;
+  font-weight: bold;
+  color: maroon;
+  font-size: 11px;
 }
 
 tr.near td {
-	background: #fffac1;
+  background: #fffac1;
 }
 
 tr.line td {
-	background: #f7f09f;
+  background: #f7f09f;
 }
 
 span.user {
-  color: green;
+  color: chartreuse;
 }
 
 span.native {
-  color: blue;
+  color: lightseagreen;
 }
+
+
+span.Zend {
+  color: yellowgreen;
+}
+
+span.Corretge {
+  color: coral;
+}
+
+
+tr:nth-child(even) {background: ivory;}
+tr:nth-child(odd) {background: aliceblue;}
