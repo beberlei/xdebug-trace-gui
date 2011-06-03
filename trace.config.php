@@ -12,3 +12,5 @@ $ownTraces = explode(PHP_EOL, $ownTraces);
 
 define('XDEBUG_TRACE_GUI_MEMORY_TRIGGER', '0.3');
 define('XDEBUG_TRACE_GUI_TIME_TRIGGER', '0.03');
+
+define('XDEBUG_TRACE_GUI_CUSTOM_NAMESPACE', 'Corretge\\');

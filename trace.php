@@ -49,6 +49,7 @@ error_reporting(0);
 		 * retrieve the xdebug.trace_format ini set.
 		 */
 		$xdebug_trace_format = ini_get('xdebug.trace_format');
+		$XDEBUG_TRACE_GUI_CUSTOM_NAMESPACE_LEN = strlen(XDEBUG_TRACE_GUI_CUSTOM_NAMESPACE);
 
 		$traceFile = $config['directory'] . '/' . $_GET ['file'];
 
@@ -99,7 +100,8 @@ error_reporting(0);
 				switch ($xdebug_trace_format)
 				{
 					/**
-					 * xdebug.trace_format = 1
+					 * xdebug.trace_format = 1  Computerized
+					 * @link http://www.xdebug.org/docs/all_settings#trace_format
 					 */
 					case 1:
 						$data = explode("\t", $line);
@@ -253,7 +255,7 @@ error_reporting(0);
 					/**
 					 * And all Corretge namespace classes and methods
 					 */
-					elseif (substr($trace['function'], 0 , 9) == 'Corretge\\')
+					elseif (substr($trace['function'], 0 , $XDEBUG_TRACE_GUI_CUSTOM_NAMESPACE_LEN) == XDEBUG_TRACE_GUI_CUSTOM_NAMESPACE)
 					{
 						$userFunction = 'Corretge';
 					}
