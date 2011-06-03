@@ -113,7 +113,7 @@ error_reporting(0);
 							$valParms = '';
 							for($i=11; $i<(11+$numParms); $i++)
 							{
-									$valParms .= "<li>". htmlentities($data[$i]) . "</li>\n";
+									$valParms .= "<li>". str_replace('\n', '<br />', htmlentities($data[$i])) . "</li>\n";
 							}
 						}
 						else
@@ -239,7 +239,7 @@ error_reporting(0);
 				else
 				{
 								?><span class="user" title="UDF ">&#x261b; </span><?php } ?><strong><?php if ($trace['type'] == 0)
-					{ ?>php::<?php } ?><?= $trace['function'] ?></strong><ul><?= $trace['valParms'] ?></ul><br />
+					{ ?>\<?php } ?><?= $trace['function'] ?></strong><ul><?= $trace['valParms'] ?></ul><br />
 							<small><?= $trace['filename'] ?></small>
 							<span class="warning">
 								<?php
