@@ -36,8 +36,8 @@ error_reporting(0);
 				</select>
 			</label>
 
-			<label>If the memory jumps <input type="text" name="memory" value="0.3" style="text-align:right" size="5"/> MB, provide an alert</label>
-			<label>If the execution time jumps <input type="text" name="time" value="0.3" style="text-align:right" size="5"/> seconds, provide an alert</label>
+			<label>If the memory jumps <input type="text" name="memory" value="<?= XDEBUG_TRACE_GUI_MEMORY_TRIGGER ?>" style="text-align:right" size="5"/> MB, provide an alert</label>
+			<label>If the execution time jumps <input type="text" name="time" value="<?= XDEBUG_TRACE_GUI_TIME_TRIGGER ?>" style="text-align:right" size="5"/> seconds, provide an alert</label>
 
 			<input type="submit" value="parse" />
 
