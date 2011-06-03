@@ -75,3 +75,11 @@ tr.near td {
 tr.line td {
 	background: #f7f09f;
 }
+
+span.user {
+  color: green;
+}
+
+span.native {
+  color: blue;
+}
