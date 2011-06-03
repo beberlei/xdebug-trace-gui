@@ -45,6 +45,11 @@ error_reporting(0);
 
 		<h2>Output</h2>
 		<?php
+		/**
+		 * retrieve the xdebug.trace_format ini set.
+		 */
+		$xdebug_trace_format = ini_get('xdebug.trace_format');
+
 		$traceFile = $config['directory'] . '/' . $_GET ['file'];
 
 		$memJump = 1;
@@ -76,39 +81,83 @@ error_reporting(0);
 			$levelIds = array();
 			$ids = 0;
 			$defFn = get_defined_functions();
-
+			/**
+			 * counter
+			 */
+			$jCnt = 0;
+			
+			/**
+			 * Process all lines
+			 */
 			foreach ($lines as $line)
 			{
+				/**
+				 * Add one to the counter
+				 */
+				$jCnt++;
 
-				if (substr_count($line, "\t") >= 5)
+				switch ($xdebug_trace_format)
 				{
-					$data = explode("\t", $line);
-					list($level, $id, $point, $time, $memory, $function, $type, $file, $filename, $line) = $data;
-					$memory = round($memory / (1024 * 1024), 4);
-				}
-				else
-				{
-					$strippedLine = preg_replace('(([\s]{2,}))', ' ', trim($line));
-					list ($time, $memory) = explode(" ", $strippedLine);
-					$memory = round($memory / (1024 * 1024), 4);
+					/**
+					 * xdebug.trace_format = 1
+					 */
+					case 1:
+						$data = explode("\t", $line);
+						list($level, $id, $point, $time, $memory, $function, $type, $file, $filename, $line, $numParms) = $data;
+						
+						/**
+						 * if there is params save it
+						 */
+						if (isset($numParms) and $numParms > 0)
+						{
+							$valParms = '';
+							for($i=11; $i<(11+$numParms); $i++)
+							{
+									$valParms .= "<li>". htmlentities($data[$i]) . "</li>\n";
+							}
+						}
+						else
+						{
+							$valParms = '';
+						}
+						
+						$memory = round($memory / (1024 * 1024), 4);
 
-					$level = round(((strpos($line, '->') - strpos($line, $memory) + strlen($memory))) / 2);
-					if ($level <= $previousLevel && isset($levelIds[$level]))
-					{
-						$fullTrace[$levelIds[$level]]['timeOnExit'] = $time;
-						$fullTrace[$levelIds[$level]]['memoryOnExit'] = $memory;
-					}
-					$id = ++$ids;
-					$levelIds[$level] = $id;
-					$previousLevel = $level;
+						break;
 
-					$parts = array_map('trim', explode("->", $line, 2));
-					$parts = explode(" ", $parts[1]);
-					$function = $parts[0];
-					list($line, $file) = array_map('strrev', explode(":", strrev($parts[1]), 2));
-					$filename = $file;
-					$point = 0;
-					$type = in_array(substr($function, 0, strpos($function, "(")), $defFn['internal']) ? 0 : 1;
+					/**
+					 * Other xdebug.trace_format
+					 * @todo code for all types
+					 */
+					default:
+
+						$strippedLine = preg_replace('(([\s]{2,}))', ' ', trim($line));
+						list ($time, $memory) = explode(" ", $strippedLine);
+
+						$memory = round($memory / (1024 * 1024), 4);
+
+						$level = round(((strpos($line, '->') - strpos($line, $memory) + strlen($memory))) / 2);
+
+						if ($level <= $previousLevel && isset($levelIds[$level]))
+						{
+							$fullTrace[$levelIds[$level]]['timeOnExit'] = $time;
+							$fullTrace[$levelIds[$level]]['memoryOnExit'] = $memory;
+						}
+						$id = ++$ids;
+						$levelIds[$level] = $id;
+						$previousLevel = $level;
+
+						$parts = array_map('trim', explode("->", $line, 2));
+						$parts = explode(" ", $parts[1]);
+						$function = $parts[0];
+						list($line, $file) = array_map('strrev', explode(":", strrev($parts[1]), 2));
+						$filename = $file;
+						$point = 0;
+						$type = in_array(substr($function, 0, strpos($function, "(")), $defFn['internal']) ? 0 : 1;
+
+						$valParms = '';
+
+						break;
 				}
 
 				if (empty($function))
@@ -121,7 +170,16 @@ error_reporting(0);
 				if ($point == 0)
 				{
 					// starting function
-					$fullTrace[$id] = array('level' => $level, 'id' => $id, 'timeOnEntry' => $time, 'memoryOnEntry' => $memory, 'function' => $function, 'type' => $type, 'file' => $file, 'filename' => $filename, 'line' => $line);
+					$fullTrace[$id] = array('level' => $level, 
+						'id' => $id, 
+						'timeOnEntry' => $time, 
+						'memoryOnEntry' => $memory, 
+						'function' => $function, 
+						'type' => $type, 
+						'file' => $file, 
+						'filename' => $filename, 
+						'line' => $line,
+						'valParms' => $valParms);
 
 					if (($memory - $lastMemory) > $memJump)
 					{
@@ -165,9 +223,9 @@ error_reporting(0);
 				</tr>
 				<tr>
 					<th>Function / File</th>
-					<th>Line</th>
-					<th>Time</th>
-					<th>Memory</th>
+					<th style="min-width: 8em;">Line</th>
+					<th style="min-width: 8em;">Time</th>
+					<th style="min-width: 8em;">Memory</th>
 				</tr>
 				<?php
 				foreach ($fullTrace as $trace)
@@ -176,12 +234,12 @@ error_reporting(0);
 					<tr>
 						<td style="padding-left:<?= ($trace['level'] * 10) ?>px">
 							<?php if ($trace['type'] == 0)
-								{ ?><a target="_blank" href="http://php.net/<?= $trace['function'] ?>"><span class="native" title="PHP ">&#x261b; </span></a><?php
+							{ ?><a target="_blank" href="http://php.net/<?= $trace['function'] ?>"><span class="native" title="PHP ">&#x261b; </span></a><?php
 				}
 				else
 				{
 								?><span class="user" title="UDF ">&#x261b; </span><?php } ?><strong><?php if ($trace['type'] == 0)
-						{ ?>php::<?php } ?><?= $trace['function'] ?></strong><br />
+					{ ?>php::<?php } ?><?= $trace['function'] ?></strong><ul><?= $trace['valParms'] ?></ul><br />
 							<small><?= $trace['filename'] ?></small>
 							<span class="warning">
 								<?php
