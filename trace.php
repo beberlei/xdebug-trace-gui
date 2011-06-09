@@ -284,7 +284,13 @@ error_reporting(0);
 						</td>
 						<td class="digit line"><a href="#<?= $trace['line'] ?>"><?= $trace['line'] ?></a></td>
 						<td class="digit" style="<?php if ($trace['timeAlert'])
-						{ ?>background:maroon;color:white<?php } ?>">in: <?= $trace['timeOnEntry'] ?><br />out: <?= $trace['timeOnExit'] ?></td>
+						{ ?>background:maroon;color:white<?php } ?>">in: <?= $trace['timeOnEntry'] ?> s<br />out: <?= $trace['timeOnExit'] ?> s<br />
+                                                <?php
+                                                if (isset($trace['timeOnEntry']) and isset($trace['timeOnExit']))
+                                                {
+                                                    echo  number_format(($trace['timeOnExit'] - $trace['timeOnEntry']) * 1000000, 0) . ' µs';
+                                                }
+                                                ?></td>
 						<td class="digit" style="<?php if ($trace['memoryAlert'])
 						{ ?>background:maroon;color:white<?php } ?>">in: <?= $trace['memoryOnEntry'] ?> MB<br />out: <?= $trace['memoryOnExit'] ?> MB</td>
 					</tr>
